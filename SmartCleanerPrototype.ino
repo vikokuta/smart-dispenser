@@ -46,7 +46,6 @@ void setup()
 {
   redBottleThreshold = int(bottleStartLevel * 0.1);
   yellowBottleThreshold = int(bottleStartLevel * 0.4);
-  //bottleManager = bottleStartLevel;
   
   pinMode(LED_BUILTIN, OUTPUT);
   
@@ -87,8 +86,6 @@ void loop(){
   checkTemperature();
   resetBottle();
   lightControl();
-  //ledBlink();
-  //readDistance();
   dispense();
   
 }
@@ -130,21 +127,18 @@ void checkTemperature(){
 void temperatureLed(){
  Serial.println(String(celsius) + " PEGOU O LED");
   if(celsius >= 39){
-    Serial.println("TA COM FEBRE PAU NO CU");
     digitalWrite(ledRgbR, HIGH);
     digitalWrite(ledRgbG, LOW);
     digitalWrite(ledRgbB, LOW);
     stateMachine = 2;
   }
   else if(celsius >= 37){
-    Serial.println("VAI PRA CASA, TA QUENTE");
     digitalWrite(ledRgbR, HIGH);
     digitalWrite(ledRgbG, HIGH);
     digitalWrite(ledRgbB, LOW);
     stateMachine = 1;
   }
   else{
-    Serial.println("TA BAO, ENTRAI");
    	digitalWrite(ledRgbR, LOW);
     digitalWrite(ledRgbG, HIGH);
     digitalWrite(ledRgbB, LOW); 
@@ -152,41 +146,27 @@ void temperatureLed(){
   }
 }
 
-
-
-void ledBlink(){
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(1000); // Wait for 1000 millisecond(s)
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(1000); // Wait for 1000 millisecond(s)
-}
-
 //LIGHT BOTTLE INDICATOR MANAGER
 void lightControl(){
-  //Serial.println("COUNTER: " + String(bottleManager));
   if(bottleManager <= redBottleThreshold){
-    	//Serial.println("FUDEU!!!!");
     	digitalWrite(green, LOW);
     	digitalWrite(yellow, LOW);
     	digitalWrite(red, HIGH);
   }
   else if(bottleManager <= yellowBottleThreshold){
-        Serial.println(String(bottleManager));
-    	Serial.println("Entrei no amarelo");
     	digitalWrite(green, LOW);
     	digitalWrite(yellow, HIGH);
     	digitalWrite(red, LOW);
   }
   else{
     	Serial.println(String(bottleManager));
-    	Serial.println("Entrei no verde");
     	digitalWrite(green, HIGH);
     	digitalWrite(yellow, LOW);
     	digitalWrite(red, LOW);
   }
 }
 
-//CIGANA LENDO A MAO
+//LENDO A MAO
 long readDistance(){
 	digitalWrite(pin_trigger, LOW);
 	delayMicroseconds(2);
@@ -195,9 +175,6 @@ long readDistance(){
 	digitalWrite(pin_trigger, LOW);
 	duration = pulseIn(pin_echo, HIGH);
 	distanceCm= duration*0.034/2;
-	distanceInch = duration*0.0133/2;
-  	//Serial.println("CM: " + String(distanceCm) + " INCHES: " + String(distanceInch));
-  
   	return distanceCm;
 }
 
@@ -224,19 +201,13 @@ void dispense(){
 //RESETS COUNTER FOR LEDS
 void resetBottle(){
   	
-  buttonState = digitalRead(pin_reset);
-  //Serial.println(String(buttonState));
-  
+  buttonState = digitalRead(pin_reset);  
   if(buttonState != lastButtonState){
-    Serial.println("ENTREI CORNO");
     if(buttonState == HIGH){
-     Serial.println("TO APERTANDO, CORNO");
      bottleManager = bottleStartLevel;
     }
    	delay(1000);
   }
-  
-  
   	//TO DO: Post para DB com insert de dados modelo "ID, DATETIME"
   	//para registro da troca de bottle
 }
