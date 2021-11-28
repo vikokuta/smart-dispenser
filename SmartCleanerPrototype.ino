@@ -20,6 +20,7 @@
 int baselineTemp = 0;
 int celsius = 0;
 int stateMachine = 0;
+int baseTemperature = 35;
 
 //LCD
 LiquidCrystal lcd(12,11,5,4,3,2);
@@ -82,12 +83,10 @@ void setup()
 
 
 void loop(){
-  
-  checkTemperature();
   resetBottle();
   lightControl();
+  checkTemperature();
   dispense();
-  
 }
 
 
@@ -109,6 +108,9 @@ void checkTemperature(){
   lcd.setCursor(3, 1);
   
   switch(stateMachine){
+    case 3:
+    	lcd.print("AMBIENTE");
+    break;
     case 2:
 		lcd.print("COM FEBRE");
     	break;
@@ -137,6 +139,12 @@ void temperatureLed(){
     digitalWrite(ledRgbG, HIGH);
     digitalWrite(ledRgbB, LOW);
     stateMachine = 1;
+  }
+  else if(celsius <= baseTemperature){
+   	digitalWrite(ledRgbR, LOW);
+    digitalWrite(ledRgbG, LOW);
+    digitalWrite(ledRgbB, HIGH);
+    stateMachine = 3;
   }
   else{
    	digitalWrite(ledRgbR, LOW);
